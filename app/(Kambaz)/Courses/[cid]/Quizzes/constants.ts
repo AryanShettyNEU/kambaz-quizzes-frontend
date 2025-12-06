@@ -1,0 +1,8 @@
+export const QUIZ_TYPES = [
+  "GRADED_QUIZ",
+  "PRACTICE_QUIZ",
+  "GRADED_SURVEY",
+  "UNGRADED_SURVEY",
+];
+
+export const ASSIGNMENT_GROUP = ["QUIZZES", "EXAMS", "ASSIGNMENTS", "PROJECT"];

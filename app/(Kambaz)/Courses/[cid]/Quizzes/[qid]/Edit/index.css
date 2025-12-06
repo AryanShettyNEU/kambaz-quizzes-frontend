@@ -1,0 +1,7 @@
+.custom-tabs .nav-link {
+  color: #dc3545 !important;
+}
+
+.custom-tabs .nav-link.active {
+  color: black !important;
+}
