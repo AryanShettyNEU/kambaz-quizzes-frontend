@@ -7,7 +7,7 @@ import { IoEllipsisVertical } from "react-icons/io5";
 import { FaBan } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 
-import { deleteQuiz, togglePublish } from "./reducer"; 
+import { deleteQuiz, togglePublish, fetchQuizzesForCourse } from "./reducer"; 
 
 interface QuizItemProps {
   quiz: any;
@@ -22,6 +22,7 @@ const QuizItem: React.FC<QuizItemProps> = ({ quiz, cid, isFaculty }) => {
   const handlePublish = async () => {
   
       await dispatch(togglePublish({ quizId: quiz._id, published: !quiz.published }));
+      await dispatch(fetchQuizzesForCourse(cid));
       setShow(false);
   };
 

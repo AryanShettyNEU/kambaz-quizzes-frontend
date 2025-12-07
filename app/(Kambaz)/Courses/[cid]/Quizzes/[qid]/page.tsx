@@ -61,6 +61,15 @@ export default function QuizDetails() {
   const allowedAttempts = quiz.multipleAttempts ? quiz.howManyAttempts || 1 : 1;
   const remainingAttempts = allowedAttempts - myAttempts.length;
 
+  const getAvailability = () => {
+    const now = new Date();
+    const start = new Date(quiz.availableDate);
+    const end = new Date(quiz.untilDate);
+    return !(now > end || now < start)
+  };
+
+  const isAvailable = getAvailability();
+
   const yn = (bool: boolean) => (bool ? "Yes" : "No");
 
   const quizSettings = [
@@ -76,10 +85,8 @@ export default function QuizDetails() {
     { label: "Require Respondus LockDown Browser", value: "No" },
     { label: "Required to View Quiz Results", value: "No" },
     { label: "Webcam Required", value: yn(quiz.webcamRequired) },
-    {
-      label: "Lock Questions After Answering",
-      value: yn(quiz.lockQuestionsAfterAnswering),
-    },
+    { label: "Lock Questions After Answering", value: yn(quiz.lockQuestionsAfterAnswering) },
+    { label: "Maximum Number of Attempts", value: quiz.howManyAttempts },
   ];
 
   return (
@@ -110,20 +117,16 @@ export default function QuizDetails() {
               <Button
                 size="lg"
                 variant="danger"
-                onClick={() =>
-                  router.push(`/Courses/${cid}/Quizzes/${qid}/TakeQuiz`)
-                }
+                onClick={() => router.push(`/Courses/${cid}/Quizzes/${qid}/TakeQuiz`)}
+                disabled={!isAvailable}
               >
                 Start Quiz
               </Button>
             ) : (
-              <Alert variant="secondary">
-                You have used all your attempts.
-              </Alert>
+              <Alert variant="secondary">You have used all your attempts.</Alert>
             )}
             <div className="text-muted mt-2 small">
-              Remaining Attempts:{" "}
-              {remainingAttempts < 0 ? 0 : remainingAttempts}
+              Remaining Attempts: {remainingAttempts < 0 ? 0 : remainingAttempts}
             </div>
           </div>
         )}
@@ -154,17 +157,25 @@ export default function QuizDetails() {
       )}
 
       <div className="mb-5">
-        {quizSettings.map((setting, index) => (
-          <Row key={index} className="mb-2">
-            <Col xs={6} sm={5} className="text-end fw-bold">
-              {setting.label}
-            </Col>
+        {quizSettings
+          .filter(setting => {
+            if (isFaculty) {
+              return true;
+            } else {
+              return ["Quiz Type", "Points", "Time Limit", "Multiple Attempts", "Maximum Number of Attempts"].includes(setting.label);
+            }
+          })
+          .map((setting, index) => (
+            <Row key={index} className="mb-2">
+              <Col xs={6} sm={5} className="text-end fw-bold">
+                {setting.label}
+              </Col>
 
-            <Col xs={6} sm={7} className="text-start text-dark">
-              {setting.value}
-            </Col>
-          </Row>
-        ))}
+              <Col xs={6} sm={7} className="text-start text-dark">
+                {setting.value}
+              </Col>
+            </Row>
+          ))}
       </div>
 
       <div className="border-top pt-3">
