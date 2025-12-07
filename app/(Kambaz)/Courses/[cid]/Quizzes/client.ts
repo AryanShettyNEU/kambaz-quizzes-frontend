@@ -22,6 +22,13 @@ export const createAttempt = async (quizId: string, attempt: any) => {
   return response.data;
 };
 
+export const getAttemptById = async (attemptId: string) => {
+  const response = await axiosWithCredentials.get(
+    `${QUIZZES_API}/attempt/${attemptId}`
+  );
+  return response.data;
+};
+
 export const findQuizzesForCourse = async (courseId: string) => {
   const response = await axios.get(`${COURSES_API}/${courseId}/quizzes`);
   return response.data;

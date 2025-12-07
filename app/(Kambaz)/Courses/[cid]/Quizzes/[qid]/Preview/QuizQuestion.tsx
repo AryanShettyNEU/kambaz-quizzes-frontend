@@ -8,6 +8,7 @@ export default function QuizQuestion({
   answer,
   onChange,
   isSubmitted,
+  isCorrect,
 }: any) {
   const questionBody = question.questionText || question.question || "";
 
@@ -16,7 +17,7 @@ export default function QuizQuestion({
     : question.choices || [];
 
   if (
-    (question.type === "TRUE_FALSE" || question.type === "true_false") &&
+    (question.type as string).toUpperCase() === "TRUE_FALSE" &&
     optionsToDisplay.length === 0
   ) {
     optionsToDisplay = ["True", "False"];
@@ -39,24 +40,49 @@ export default function QuizQuestion({
   };
 
   const getOptionStyle = (choice: string) => {
-    if (!isSubmitted) return {}; // Normal taking mode
+    if (!isSubmitted) return {};
 
-    const isCorrect = isOptionCorrect(choice);
+    const isChoiceTruth = isOptionCorrect(choice);
     const isSelected = answer === choice;
 
-    if (isCorrect)
+    if (isChoiceTruth) {
       return {
         backgroundColor: "#d4edda",
         border: "1px solid #c3e6cb",
         color: "#155724",
-      }; // Green success
-    if (isSelected && !isCorrect)
-      return {
-        backgroundColor: "#f8d7da",
-        border: "1px solid #f5c6cb",
-        color: "#721c24",
-      }; // Red error
+      };
+    }
+
+    if (isSelected) {
+      if (isCorrect !== undefined) {
+        return isCorrect
+          ? {
+              backgroundColor: "#d4edda",
+              border: "1px solid #c3e6cb",
+              color: "#155724",
+            }
+          : {
+              backgroundColor: "#f8d7da",
+              border: "1px solid #f5c6cb",
+              color: "#721c24",
+            };
+      }
+
+      if (!isChoiceTruth) {
+        return {
+          backgroundColor: "#f8d7da",
+          border: "1px solid #f5c6cb",
+          color: "#721c24",
+        };
+      }
+    }
     return {};
+  };
+
+  const isBlanksCorrect = () => {
+    if (isCorrect !== undefined) return isCorrect;
+
+    return getCorrectBlanks().some((a: string) => a === (answer || ""));
   };
 
   return (
@@ -73,33 +99,41 @@ export default function QuizQuestion({
           question.type === "MCQ" ||
           question.type === "TRUE_FALSE") && (
           <div className="d-flex flex-column gap-2">
-            {optionsToDisplay.map((choice: string, idx: number) => (
-              <div
-                key={idx}
-                className="p-2 rounded d-flex align-items-center"
-                style={getOptionStyle(choice)}
-              >
-                <Form.Check
-                  type="radio"
-                  name={question._id}
-                  id={`${question._id}-${idx}`}
-                  label={choice}
-                  checked={answer === choice}
-                  onChange={() => !isSubmitted && onChange(choice)}
-                  disabled={isSubmitted}
-                  className="flex-grow-1"
-                />
+            {optionsToDisplay.map((choice: string, idx: number) => {
+              const isSelected = answer === choice;
+              const isActuallyCorrect = isOptionCorrect(choice);
 
-                {isSubmitted && isOptionCorrect(choice) && (
-                  <FaCheck className="text-success ms-2" />
-                )}
-                {isSubmitted &&
-                  answer === choice &&
-                  !isOptionCorrect(choice) && (
-                    <FaTimes className="text-danger ms-2" />
-                  )}
-              </div>
-            ))}
+              const showCheck =
+                isSubmitted &&
+                (isActuallyCorrect || (isSelected && isCorrect === true));
+              const showTimes =
+                isSubmitted &&
+                isSelected &&
+                (isCorrect === false ||
+                  (!isActuallyCorrect && isCorrect === undefined));
+
+              return (
+                <div
+                  key={idx}
+                  className="p-2 rounded d-flex align-items-center"
+                  style={getOptionStyle(choice)}
+                >
+                  <Form.Check
+                    type="radio"
+                    name={question._id}
+                    id={`${question._id}-${idx}`}
+                    label={choice}
+                    checked={answer === choice}
+                    onChange={() => !isSubmitted && onChange(choice)}
+                    disabled={isSubmitted}
+                    className="flex-grow-1"
+                  />
+
+                  {showCheck && <FaCheck className="text-success ms-2" />}
+                  {showTimes && <FaTimes className="text-danger ms-2" />}
+                </div>
+              );
+            })}
           </div>
         )}
 
@@ -110,25 +144,12 @@ export default function QuizQuestion({
               onChange={(e) => onChange(e.target.value)}
               disabled={isSubmitted}
               placeholder="Type your answer"
-              isInvalid={
-                isSubmitted &&
-                !getCorrectBlanks().some(
-                  (a: string) =>
-                    a.toLowerCase() === (answer || "").toLowerCase()
-                )
-              }
-              isValid={
-                isSubmitted &&
-                getCorrectBlanks().some(
-                  (a: string) =>
-                    a.toLowerCase() === (answer || "").toLowerCase()
-                )
-              }
+              isInvalid={isSubmitted && !isBlanksCorrect()}
+              isValid={isSubmitted && isBlanksCorrect()}
             />
             {isSubmitted &&
-              !getCorrectBlanks().some(
-                (a: string) => a.toLowerCase() === (answer || "").toLowerCase()
-              ) && (
+              !isBlanksCorrect() &&
+              !!getCorrectBlanks().join(", ") && (
                 <Form.Text className="text-danger">
                   Correct Answer: {getCorrectBlanks().join(", ")}
                 </Form.Text>

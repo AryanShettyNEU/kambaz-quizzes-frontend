@@ -1,10 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Button, Container, Alert } from "react-bootstrap";
-import { useSelector, useDispatch } from "react-redux";
+import { Button, Container, Alert, ListGroup } from "react-bootstrap";
+import { useSelector } from "react-redux";
 import QuizQuestion from "../Preview/QuizQuestion";
 import * as client from "../../client";
+import { FaRegQuestionCircle } from "react-icons/fa";
 export default function QuizTake() {
   const { cid, qid } = useParams();
   const router = useRouter();
@@ -122,6 +123,34 @@ export default function QuizTake() {
       ) : (
         <Alert variant="danger">This quiz has no questions setup yet.</Alert>
       )}
+      <div className="mb-5">
+        <h4>Questions</h4>
+        <ListGroup variant="flush">
+          {questions.map((q: any, idx: number) => (
+            <ListGroup.Item
+              key={q._id}
+              action
+              onClick={() => setCurrentQuestionIndex(idx)}
+              className="border-0 px-0 py-1 text-danger"
+              style={{ backgroundColor: "transparent" }}
+            >
+              <FaRegQuestionCircle className="me-2 text-muted" />
+              <span
+                className={
+                  currentQuestionIndex === idx
+                    ? "fw-bold text-dark"
+                    : "text-danger"
+                }
+              >
+                Question {idx + 1}
+              </span>
+              {answers[q._id] && (
+                <span className="ms-2 text-muted small">&#10003;</span>
+              )}
+            </ListGroup.Item>
+          ))}
+        </ListGroup>
+      </div>
     </Container>
   );
 }

@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchQuizDetails } from "./../reducer";
 import { fetchQuizzesForCourse } from "./../reducer";
 import * as client from "../client";
+import AttemptRow from "./AttemptRow";
 
 export default function QuizDetails() {
   const { cid, qid } = useParams();
@@ -138,21 +139,44 @@ export default function QuizDetails() {
         {quiz.title}
       </h2>
 
-      {!isFaculty && latestAttempt && (
-        <Alert
-          variant="info"
-          className="d-flex justify-content-between align-items-center mb-4"
-        >
-          <div>
-            <strong>Last Attempt:</strong>{" "}
-            {new Date(latestAttempt.submittedAt).toLocaleString()}
-          </div>
-          <div className="fs-4 fw-bold">
-            {latestAttempt.score} / {quiz.points}
-          </div>
-        </Alert>
+      {!isFaculty && attempts.length > 0 && (
+        <>
+          <Alert
+            variant="info"
+            className="d-flex justify-content-between align-items-center mb-4"
+          >
+            <div>
+              <strong>Last Attempt:</strong>{" "}
+              {new Date(latestAttempt.submittedAt).toLocaleString()}
+            </div>
+            <div className="fs-4 fw-bold">
+              {latestAttempt.score} / {quiz.points}
+            </div>
+          </Alert>
+          <p className="fw-bold fs-4">Attempts:</p>
+          <Table responsive className="mb-4">
+            <thead>
+              <tr className="border-bottom">
+                <th className="fw-bold">Attempt</th>
+                <th className="fw-bold">Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              {attempts.map((attempt: any) => (
+                <AttemptRow
+                  {...attempt}
+                  total={quiz.points}
+                  cid={cid}
+                  qid={qid}
+                  attemptId={attempt._id}
+                />
+              ))}
+            </tbody>
+          </Table>
+        </>
       )}
 
+      <p className="fw-bold fs-4">Quiz Details:</p>
       <div className="mb-5">
         {quizSettings.map((setting, index) => (
           <Row key={index} className="mb-2">
