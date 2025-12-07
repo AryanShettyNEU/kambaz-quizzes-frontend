@@ -54,16 +54,23 @@ export default function Quizzes() {
           )}
         </Col>
       </Row>
-
-      <hr className="mb-4" />
-
-        <div className="text-center mt-5 p-5 border rounded bg-light">
+{
+      quizzes.length === 0 && (  
+        <>
+              <hr className="mb-4" />
+ 
+           <div className="text-center mt-5 p-5 border rounded bg-light">
           <h4 className="text-muted">No Quizzes Available</h4>
           <p className="mb-3">
             Click the <strong>+ Quiz</strong> button above to add your first quiz.
           </p>
         </div>
-      )}
+        </>
+        )
+}
+
+
+      
 
       <ListGroup className="rounded-0">
         {quizzes.map((quiz: any) => (

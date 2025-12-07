@@ -120,7 +120,7 @@ export default function QuizPreview() {
                 isSubmitted={isSubmitted}
             />
 
-            {
+            
             <div className="d-flex justify-content-between align-items-center mb-4 p-3 bg-light border rounded">
                 <div className="small text-muted">
                     {isSubmitted ? `Quiz Score: ${score}` : `Quiz saved at ${new Date().toLocaleTimeString()}`}
