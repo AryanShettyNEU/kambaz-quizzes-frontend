@@ -40,7 +40,7 @@ export default function QuizDetailsEditor() {
     shuffleAnswers: existingQuiz?.shuffleAnswers ?? true,
     timeLimit: existingQuiz?.timeLimit ?? 20,
     multipleAttempts: existingQuiz?.multipleAttempts ?? false,
-    
+    howManyAttempts: existingQuiz?.howManyAttempts ?? 1,
     showCorrectAnswers: existingQuiz?.showCorrectAnswers === "ALWAYS", 
     accessCode: existingQuiz?.accessCode || "",
     oneQuestionAtATime: existingQuiz?.oneQuestionAtATime ?? true,
@@ -102,7 +102,13 @@ export default function QuizDetailsEditor() {
   };
 
   const handleChange = (field: string, value: any) => {
-      setQuiz({ ...quiz, [field]: value });
+      let newState = { ...quiz, [field]: value };
+
+    if (field === "multipleAttempts" && value === false) {
+        newState.howManyAttempts = 1;
+    }
+
+    setQuiz(newState);
   };
 
   return (
@@ -156,11 +162,11 @@ export default function QuizDetailsEditor() {
 
       <Row className="mb-3">
         <Col sm={3} className="text-end">
-          <FormLabel htmlFor="wd-assignment-group">Assignment Group</FormLabel>
+          <FormLabel htmlFor="wd-assignment-group">Quiz Group</FormLabel>
         </Col>
         <Col sm={6}>
           <FormSelect 
-            id="wd-assignment-group"
+            id="wd-quiz-group"
             value={quiz.assignmentGroup}
             onChange={(e) => handleChange("assignmentGroup", e.target.value)}
           >
@@ -181,6 +187,31 @@ export default function QuizDetailsEditor() {
             checked={quiz.shuffleAnswers}
             onChange={(e) => handleChange("shuffleAnswers", e.target.checked)}
           />
+
+          
+          <FormCheck
+            type="checkbox"
+            label="Allow Multiple Attempts"
+            checked={quiz.multipleAttempts}
+            onChange={(e) => handleChange("multipleAttempts", e.target.checked)}
+            className="mt-2"
+          />
+
+      
+          {quiz.multipleAttempts && (
+            <div className="d-flex align-items-center mt-2 ps-3">
+              <FormLabel className="me-2 mb-0 small">Max Attempts:</FormLabel>
+              <FormControl
+                type="number"
+                min="1"
+                // Ensure a default of 1 if the input is somehow cleared
+                value={quiz.howManyAttempts || 1} 
+                onChange={(e) => handleChange("howManyAttempts", parseInt(e.target.value))}
+                style={{ width: "60px" }}
+              />
+            </div>
+          )}
+
           <div className="d-flex align-items-center mt-2">
             <FormCheck
               type="checkbox"
