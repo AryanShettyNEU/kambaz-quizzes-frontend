@@ -2,6 +2,7 @@
 import React from "react";
 import { Tab, Tabs } from "react-bootstrap";
 import QuizDetailsEditor from "./QuizDetailsEditor";
+import QuizQuestionsEditor from "./QuizQuestionEditor";
 import "./index.css";
 
 const page = () => {
@@ -15,7 +16,9 @@ const page = () => {
         <Tab eventKey={"details"} title="Details">
           <QuizDetailsEditor />
         </Tab>
-        <Tab eventKey={"questions"} title="Questions"></Tab>
+        <Tab eventKey={"questions"} title="Questions">
+          <QuizQuestionsEditor />
+        </Tab>
       </Tabs>
     </div>
   );
