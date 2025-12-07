@@ -4,21 +4,20 @@ import { FaCheck, FaTimes } from "react-icons/fa";
 
 export default function QuizQuestion({ question, index, answer, onChange, isSubmitted }: any) {
 
-  // 1. Get the Question Text safely (Backend uses questionText)
+ 
   const questionBody = question.questionText || question.question || "";
 
-  // 2. Get Options safely (Backend uses options array)
-  // If we have 'options' (backend), map to strings. If we have 'choices' (frontend temp), use them.
+
   let optionsToDisplay = question.options 
     ? question.options.map((o: any) => o.text) 
     : (question.choices || []);
 
-  // Safety Fallback: If it's True/False but has no options (rare edge case), default to T/F
+  
   if ((question.type === "TRUE_FALSE" || question.type === "true_false") && optionsToDisplay.length === 0) {
     optionsToDisplay = ["True", "False"];
   }
 
-  // 3. Helper to check if an option is correct (Handles both Backend & Frontend structures)
+ 
   const isOptionCorrect = (choiceText: string) => {
     if (question.options) {
         const match = question.options.find((o: any) => o.text === choiceText);
@@ -27,13 +26,13 @@ export default function QuizQuestion({ question, index, answer, onChange, isSubm
     return question.correctAnswers?.includes(choiceText);
   };
 
-  // 4. Helper for Fill-in-Blanks (Get list of all valid answers)
+  
   const getCorrectBlanks = () => {
       if (question.options) return question.options.filter((o:any) => o.isCorrect).map((o:any) => o.text);
       return question.correctAnswers || [];
   };
   
-  // Helper to determine styling for options during review
+ 
   const getOptionStyle = (choice: string) => {
     if (!isSubmitted) return {}; // Normal taking mode
 
@@ -55,10 +54,9 @@ export default function QuizQuestion({ question, index, answer, onChange, isSubm
       <Card.Body>
         <div className="mb-4" dangerouslySetInnerHTML={{ __html: questionBody }}></div>
 
-        {/* --- MULTIPLE CHOICE & TRUE/FALSE --- */}
         {(question.type === "MULTIPLE_CHOICE" || question.type === "MCQ" || question.type === "TRUE_FALSE") && (
           <div className="d-flex flex-column gap-2">
-            {/* FIX: Use optionsToDisplay for EVERYTHING. This ensures the UI matches the DB exactly. */}
+            
             {optionsToDisplay.map((choice: string, idx: number) => (
               <div 
                 key={idx} 
@@ -75,7 +73,7 @@ export default function QuizQuestion({ question, index, answer, onChange, isSubm
                     disabled={isSubmitted} 
                     className="flex-grow-1"
                  />
-                 {/* Icons for review mode */}
+                
                  {isSubmitted && isOptionCorrect(choice) && <FaCheck className="text-success ms-2"/>}
                  {isSubmitted && answer === choice && !isOptionCorrect(choice) && <FaTimes className="text-danger ms-2"/>}
               </div>
@@ -83,7 +81,7 @@ export default function QuizQuestion({ question, index, answer, onChange, isSubm
           </div>
         )}
 
-        {/* --- FILL IN BLANK --- */}
+
         {question.type === "FILL_BLANKS" && (
           <div>
               <Form.Control 

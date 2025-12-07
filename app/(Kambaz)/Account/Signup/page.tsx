@@ -8,12 +8,16 @@ import { setCurrentUser } from "../reducer";
 import { redirect } from "next/navigation";
 
 export default function Signup() {
-  const [user, setUser] = useState<any>({});
+  const [user, setUser] = useState<any>({ username: "", password: "", role: "STUDENT" });
   const dispatch = useDispatch();
   const signup = async () => {
-    const currentUser = await client.signup(user);
-    dispatch(setCurrentUser(currentUser));
-    redirect("/Account/Profile");
+    try {
+      const currentUser = await client.signup(user);
+      dispatch(setCurrentUser(currentUser));
+      redirect("/Account/Profile");
+    } catch (err: any) {
+      console.log(err); // Handle errors (like duplicate username)
+    }
   };
 
   return (
@@ -24,6 +28,7 @@ export default function Signup() {
       }}
     >
       <h3>Sign up</h3>
+
       <FormLabel htmlFor="wd-signup-username">Username</FormLabel>
       <FormControl
         id="wd-signup-username"
@@ -54,6 +59,20 @@ export default function Signup() {
         type="password"
         className="wd-password-verify"
       />
+
+      {/* --- NEW: ROLE DROPDOWN --- */}
+      <FormLabel htmlFor="wd-signup-role">Role</FormLabel>
+      <select
+        id="wd-signup-role"
+        className="form-select mb-2"
+        value={user.role}
+        onChange={(e) => setUser({ ...user, role: e.target.value })}
+      >
+        <option value="STUDENT">Student</option>
+        <option value="FACULTY">Faculty</option>
+        <option value="ADMIN">Admin</option>
+      </select>
+      {/* --------------------------- */}
 
       <Button className="w-100 my-3" onClick={signup}>
         Sign up{" "}

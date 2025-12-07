@@ -24,8 +24,7 @@ export default function QuizTake() {
   };
 
   const handleSubmit = async () => {
-    // 1. Calculate Score Client-Side
-    // (Ideally backend does this, but for this assignment we often do it here)
+    
     let earnedPoints = 0;
     
     questions.forEach((q: any) => {
@@ -44,20 +43,19 @@ export default function QuizTake() {
         }
     });
 
-    // 2. Prepare Payload
+   
     const attemptData = {
         quizId: qid,
         answers: answers,
         score: earnedPoints,
         timestamp: new Date().toISOString(),
-        studentId: "CURRENT_USER" // Replace with real ID
+        studentId: "CURRENT_USER" 
     };
 
-    // 3. Send to Backend
-    // This will FAIL until your teammate adds the endpoint, but the code is correct.
+   
     try {
         await dispatch(submitQuizAttempt({ quizId: qid as string, attempt: attemptData }));
-        // 4. Redirect to Results (The Start Screen, which now shows 'Last Attempt')
+        
         router.push(`/Courses/${cid}/Quizzes/${qid}`);
     } catch (err) {
         alert("Failed to save attempt. Backend endpoint missing?");
@@ -80,7 +78,7 @@ export default function QuizTake() {
                 index={currentQuestionIndex}
                 answer={answers[questions[currentQuestionIndex]._id]}
                 onChange={(val: any) => handleAnswerChange(questions[currentQuestionIndex]._id, val)}
-                isSubmitted={false} // Always false while taking
+                isSubmitted={false} 
             />
 
             <div className="d-flex justify-content-between mt-4">
