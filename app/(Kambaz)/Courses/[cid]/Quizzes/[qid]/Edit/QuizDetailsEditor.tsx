@@ -106,10 +106,6 @@ export default function QuizDetailsEditor() {
   const handleChange = (field: string, value: any) => {
       let newState = { ...quiz, [field]: value };
 
-    if (field === "multipleAttempts" && value === false) {
-        newState.howManyAttempts = 1;
-    }
-
     setQuiz(newState);
   };
 
@@ -164,11 +160,11 @@ export default function QuizDetailsEditor() {
 
       <Row className="mb-3">
         <Col sm={3} className="text-end">
-          <FormLabel htmlFor="wd-assignment-group">Quiz Group</FormLabel>
+          <FormLabel htmlFor="wd-assignment-group">Assignment Group</FormLabel>
         </Col>
         <Col sm={6}>
           <FormSelect 
-            id="wd-quiz-group"
+            id="wd-assignment-group"
             value={quiz.assignmentGroup}
             onChange={(e) => handleChange("assignmentGroup", e.target.value)}
           >
@@ -206,7 +202,7 @@ export default function QuizDetailsEditor() {
               <FormControl
                 type="number"
                 min="1"
-                // Ensure a default of 1 if the input is somehow cleared
+              
                 value={quiz.howManyAttempts || 1} 
                 onChange={(e) => handleChange("howManyAttempts", parseInt(e.target.value))}
                 style={{ width: "60px" }}

@@ -6,7 +6,6 @@ import GreenCheckmark from "../Modules/GreenCheckmark";
 import { IoEllipsisVertical } from "react-icons/io5";
 import { FaBan } from "react-icons/fa";
 import { useDispatch } from "react-redux";
-import * as client from "./client";
 
 import { deleteQuiz, togglePublish, fetchQuizzesForCourse } from "./reducer"; 
 
@@ -19,23 +18,6 @@ interface QuizItemProps {
 const QuizItem: React.FC<QuizItemProps> = ({ quiz, cid, isFaculty }) => {
   const [show, setShow] = useState(false);
   const dispatch = useDispatch<any>(); 
-
-  const [questionCount, setQuestionCount] = useState(0);
-
-  useEffect(() => {
-    const fetchQuestionCount = async () => {
-      try {
-        const fullQuiz = await client.findQuiz(quiz._id);
-        if (fullQuiz?.questions) {
-          setQuestionCount(fullQuiz.questions.length);
-        }
-      } catch (error) {
-        console.error("Could not fetch question count for", quiz.title);
-      }
-    };
-
-    fetchQuestionCount();
-  }, [quiz._id]);
 
   const handlePublish = async () => {
   
@@ -93,7 +75,7 @@ const QuizItem: React.FC<QuizItemProps> = ({ quiz, cid, isFaculty }) => {
             <span className="fw-bold">{getAvailabilityMsg()} </span> |&nbsp;
             <span className="fw-bold">Due </span>
             {new Date(quiz.dueDate).toLocaleDateString()} | {quiz.points} pts | 
-            {questionCount} Questions
+            {quiz.questionCount} Questions
           </p>
         </div>
       </div>

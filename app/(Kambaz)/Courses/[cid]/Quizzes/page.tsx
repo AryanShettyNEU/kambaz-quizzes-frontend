@@ -31,7 +31,6 @@ export default function Quizzes() {
 
   useEffect(() => {
     if (cid) {
-      console.log("Fetching quizzes for course:", cid);
       dispatch(fetchQuizzesForCourse(cid as string));
     }
   }, [cid, dispatch]);
@@ -105,7 +104,6 @@ export default function Quizzes() {
 
       <ListGroup className="rounded-0">
 
-        {/* 🎯 HEADER SECTION (Styled exactly like Assignments.tsx) */}
         <ListGroupItem className="p-0 fs-5 border-gray">
           <div className="wd-title p-3 ps-2 bg-secondary d-flex justify-content-between align-items-center">
             <div>
@@ -116,15 +114,6 @@ export default function Quizzes() {
           </div>
         </ListGroupItem>
 
-
-        {quizzes.length === 0 && (
-          <div className="text-center p-5 border-start border-end border-bottom bg-white">
-            <h4 className="text-muted">No Quizzes Available</h4>
-            <p className="mb-0">
-              Click the <strong>+ Quiz</strong> button above to add your first quiz.
-            </p>
-          </div>
-        )}
 
         {visibleQuizzes.length === 0 && (
           <div className="text-center p-5 border-start border-end border-bottom bg-white">
