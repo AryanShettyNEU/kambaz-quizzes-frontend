@@ -15,7 +15,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { BsGripVertical } from "react-icons/bs";
 import QuizItem from "./QuizItem";
-import { fetchQuizzesForCourse } from "./reducer";
+import { fetchQuizzesForCourse, createQuiz } from "./reducer";
 import "./index.css";
 
 export default function Quizzes() {
@@ -44,8 +44,38 @@ export default function Quizzes() {
     }
   });
 
-  const handleAddQuiz = () => {
-    router.push(`/Courses/${cid}/Quizzes/new/Edit`);
+  const handleAddQuiz = async () => {
+
+    const defaultQuiz = {
+      title: "New Quiz",
+      description: "New Quiz Description",
+      points: 100,
+      quizType: "GRADED_QUIZ",
+      assignmentGroup: "QUIZZES",
+      shuffleAnswers: true,
+      timeLimit: 20,
+      multipleAttempts: false,
+      howManyAttempts: 1,
+      showCorrectAnswers: "ALWAYS",
+      accessCode: "",
+      oneQuestionAtATime: true,
+      webcamRequired: false,
+      lockQuestionsAfterAnswering: false,
+      dueDate: new Date().toISOString(),
+      availableDate: new Date().toISOString(),
+      untilDate: new Date().toISOString(),
+      published: false,
+      course: cid,
+      questions: []
+    };
+
+    const action = await dispatch(createQuiz(defaultQuiz));
+
+    if (action.payload && action.payload._id) {
+        router.push(`/Courses/${cid}/Quizzes/${action.payload._id}/Edit`);
+    } else {
+        router.push(`/Courses/${cid}/Quizzes/new/Edit`);
+    }
   };
 
   return (

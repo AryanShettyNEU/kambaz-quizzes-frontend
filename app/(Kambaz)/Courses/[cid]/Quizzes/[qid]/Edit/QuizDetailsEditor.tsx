@@ -73,11 +73,13 @@ export default function QuizDetailsEditor() {
     try {
       const payload = preparePayload(false);
       if (qid === "new") {
-          await dispatch(createQuiz(payload));
+        const result = await dispatch(createQuiz(payload));
+        router.push(`/Courses/${cid}/Quizzes/${result.payload._id}`);
       } else {
           await dispatch(updateQuiz({ ...payload, _id: qid }));
+          router.push(`/Courses/${cid}/Quizzes/${qid}`);
       }
-      router.push(`/Courses/${cid}/Quizzes`); 
+      
     } catch (err) {
       alert("Failed to save quiz. Please try again.");
     }

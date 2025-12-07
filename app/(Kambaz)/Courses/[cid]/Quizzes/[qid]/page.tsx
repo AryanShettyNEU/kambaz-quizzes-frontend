@@ -5,7 +5,7 @@ import { Button, Col, Container, Row, Table, Alert } from "react-bootstrap";
 import { BsPencil } from "react-icons/bs";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchQuizDetails } from "./../reducer";
-import { fetchQuizzesForCourse } from "./../reducer";
+import { fetchQuizzesForCourse, togglePublish } from "./../reducer";
 import * as client from "../client";
 
 export default function QuizDetails() {
@@ -89,11 +89,26 @@ export default function QuizDetails() {
     { label: "Maximum Number of Attempts", value: quiz.howManyAttempts },
   ];
 
+  const handlePublishToggle = async () => {
+    
+    await dispatch(togglePublish({ quizId: qid as string, published: !quiz.published }));
+
+    dispatch(fetchQuizzesForCourse(cid as string));
+  };
+
   return (
     <Container className="py-5" style={{ maxWidth: "800px" }}>
       <div className="d-flex justify-content-center gap-2 mb-4">
         {isFaculty && (
           <>
+
+            <Button
+              variant={quiz.published ? "danger" : "success"}
+              onClick={handlePublishToggle}
+            >
+              {quiz.published ? "Unpublish" : "Publish"}
+            </Button>
+
             <Button
               variant="secondary"
               onClick={() =>
