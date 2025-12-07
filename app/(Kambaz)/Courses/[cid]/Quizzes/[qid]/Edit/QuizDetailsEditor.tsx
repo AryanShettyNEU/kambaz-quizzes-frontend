@@ -40,7 +40,7 @@ export default function QuizDetailsEditor() {
     shuffleAnswers: existingQuiz?.shuffleAnswers ?? true,
     timeLimit: existingQuiz?.timeLimit ?? 20,
     multipleAttempts: existingQuiz?.multipleAttempts ?? false,
-    
+    howManyAttempts: existingQuiz?.howManyAttempts ?? 1,
     showCorrectAnswers: existingQuiz?.showCorrectAnswers === "ALWAYS", 
     accessCode: existingQuiz?.accessCode || "",
     oneQuestionAtATime: existingQuiz?.oneQuestionAtATime ?? true,
@@ -73,11 +73,13 @@ export default function QuizDetailsEditor() {
     try {
       const payload = preparePayload(false);
       if (qid === "new") {
-          await dispatch(createQuiz(payload));
+        const result = await dispatch(createQuiz(payload));
+        router.push(`/Courses/${cid}/Quizzes/${result.payload._id}`);
       } else {
           await dispatch(updateQuiz({ ...payload, _id: qid }));
+          router.push(`/Courses/${cid}/Quizzes/${qid}`);
       }
-      router.push(`/Courses/${cid}/Quizzes`); 
+      
     } catch (err) {
       alert("Failed to save quiz. Please try again.");
     }
@@ -102,7 +104,9 @@ export default function QuizDetailsEditor() {
   };
 
   const handleChange = (field: string, value: any) => {
-      setQuiz({ ...quiz, [field]: value });
+      let newState = { ...quiz, [field]: value };
+
+    setQuiz(newState);
   };
 
   return (
@@ -181,6 +185,31 @@ export default function QuizDetailsEditor() {
             checked={quiz.shuffleAnswers}
             onChange={(e) => handleChange("shuffleAnswers", e.target.checked)}
           />
+
+          
+          <FormCheck
+            type="checkbox"
+            label="Allow Multiple Attempts"
+            checked={quiz.multipleAttempts}
+            onChange={(e) => handleChange("multipleAttempts", e.target.checked)}
+            className="mt-2"
+          />
+
+      
+          {quiz.multipleAttempts && (
+            <div className="d-flex align-items-center mt-2 ps-3">
+              <FormLabel className="me-2 mb-0 small">Max Attempts:</FormLabel>
+              <FormControl
+                type="number"
+                min="1"
+              
+                value={quiz.howManyAttempts || 1} 
+                onChange={(e) => handleChange("howManyAttempts", parseInt(e.target.value))}
+                style={{ width: "60px" }}
+              />
+            </div>
+          )}
+
           <div className="d-flex align-items-center mt-2">
             <FormCheck
               type="checkbox"

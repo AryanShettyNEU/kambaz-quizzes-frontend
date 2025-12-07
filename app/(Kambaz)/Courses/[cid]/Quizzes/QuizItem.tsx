@@ -1,13 +1,13 @@
 import { BsRocketTakeoff } from "react-icons/bs";
 import { Button, ListGroupItem, OverlayTrigger, Popover } from "react-bootstrap";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import GreenCheckmark from "../Modules/GreenCheckmark";
 import { IoEllipsisVertical } from "react-icons/io5";
 import { FaBan } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 
-import { deleteQuiz, togglePublish } from "./reducer"; 
+import { deleteQuiz, togglePublish, fetchQuizzesForCourse } from "./reducer"; 
 
 interface QuizItemProps {
   quiz: any;
@@ -22,6 +22,7 @@ const QuizItem: React.FC<QuizItemProps> = ({ quiz, cid, isFaculty }) => {
   const handlePublish = async () => {
   
       await dispatch(togglePublish({ quizId: quiz._id, published: !quiz.published }));
+      await dispatch(fetchQuizzesForCourse(cid));
       setShow(false);
   };
 
@@ -74,7 +75,7 @@ const QuizItem: React.FC<QuizItemProps> = ({ quiz, cid, isFaculty }) => {
             <span className="fw-bold">{getAvailabilityMsg()} </span> |&nbsp;
             <span className="fw-bold">Due </span>
             {new Date(quiz.dueDate).toLocaleDateString()} | {quiz.points} pts | 
-            {quiz.questions ? quiz.questions.length : 0} Questions
+            {quiz.questionCount} Questions
           </p>
         </div>
       </div>
