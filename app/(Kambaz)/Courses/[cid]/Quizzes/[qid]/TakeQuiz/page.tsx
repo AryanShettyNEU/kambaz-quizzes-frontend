@@ -58,7 +58,7 @@ export default function QuizTake() {
         
         router.push(`/Courses/${cid}/Quizzes/${qid}`);
     } catch (err) {
-        alert("Failed to save attempt. Backend endpoint missing?");
+        alert("Failed to save attempt. Please try again.");
     }
   };
 

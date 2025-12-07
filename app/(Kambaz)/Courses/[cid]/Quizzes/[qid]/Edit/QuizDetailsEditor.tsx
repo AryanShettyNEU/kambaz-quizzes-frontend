@@ -205,6 +205,29 @@ export default function QuizDetailsEditor() {
             />
           </div>
 
+          <FormCheck 
+            type="checkbox"
+            name="oneQuestionAtATime"
+            label="One Question At a Time"
+            checked={quiz.oneQuestionAtATime}
+            onChange={(e) => handleChange("oneQuestionAtATime", e.target.checked)}
+          />
+
+          <FormCheck
+            type="checkbox"
+            name="webcamRequired"
+            label="Webcam Required"
+            checked={quiz.webcamRequired}
+            onChange={(e) => handleChange("webcamRequired", e.target.checked)} 
+          />
+
+          <FormCheck
+            type="checkbox"
+            name="lockQuestionsAfterAnswering"
+            label="Lock Questions After Answering"
+            checked={quiz.lockQuestionsAfterAnswering} 
+            onChange={(e) => handleChange("lockQuestionsAfterAnswering", e.target.checked)} 
+          />
         
           <FormCheck 
             type="checkbox" 
