@@ -27,14 +27,22 @@ export default function Quizzes() {
 
   const { currentUser } = useSelector((state: any) => state.accountReducer);
 
-  const isFaculty = currentUser?.role === "FACULTY"; // ===================
+  const isFaculty = currentUser?.role === "FACULTY"; 
 
   useEffect(() => {
     if (cid) {
-      console.log("Fetching quizzes for course:", cid); // Debugging Log
+      console.log("Fetching quizzes for course:", cid); 
       dispatch(fetchQuizzesForCourse(cid as string));
     }
   }, [cid, dispatch]);
+
+  const visibleQuizzes = quizzes.filter((q: any) => {
+    if (isFaculty) {
+      return true; 
+    } else {
+      return q.published; // Students only see published quizzes
+    }
+  });
 
   const handleAddQuiz = () => {
     router.push(`/Courses/${cid}/Quizzes/new/Edit`);
@@ -88,8 +96,19 @@ export default function Quizzes() {
           </div>
         )}
 
+        {visibleQuizzes.length === 0 && (
+          <div className="text-center p-5 border-start border-end border-bottom bg-white">
+            <h4 className="text-muted">No Quizzes Available</h4>
+            <p className="mb-0">
+               {isFaculty 
+                 ? "Click the + Quiz button above to add your first quiz." 
+                 : "Your instructor has not published any quizzes yet."}
+            </p>
+          </div>
+        )}
 
-        {quizzes.map((quiz: any) => (
+
+        {visibleQuizzes.map((quiz: any) => (
           <QuizItem
             key={quiz._id}
             quiz={quiz}
