@@ -1,4 +1,6 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This project is forked from the kambaz project owned by Aryan Shetty (the owner of this repository): https://github.com/AryanShettyNEU/kambaz-next-js-cs5610-fa25-05
+
+The contributors to this repository are Aryan Shetty: https://github.com/AryanShettyNEU and Aryan Raveshia : https://github.com/ChrisWakanda .
 
 ## Getting Started
 

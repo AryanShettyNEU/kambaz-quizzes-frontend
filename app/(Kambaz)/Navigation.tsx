@@ -6,6 +6,7 @@ import { LiaBookSolid, LiaCogSolid } from "react-icons/lia";
 import { FaInbox, FaRegCircleUser } from "react-icons/fa6";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
 import { usePathname } from "next/navigation";
+import { BsGithub } from "react-icons/bs";
 
 export default function KambazNavigation() {
   const pathname = usePathname();
@@ -15,6 +16,7 @@ export default function KambazNavigation() {
     { label: "Calendar", path: "/Calendar", icon: IoCalendarOutline },
     { label: "Inbox", path: "/Inbox", icon: FaInbox },
     { label: "Labs", path: "/Labs", icon: LiaCogSolid },
+    { label: "ProjectInfo", path: "/ProjectInfo", icon: BsGithub },
   ];
 
   return (
