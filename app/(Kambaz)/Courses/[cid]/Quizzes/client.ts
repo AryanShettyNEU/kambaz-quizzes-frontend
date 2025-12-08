@@ -37,36 +37,44 @@ export const findQuiz = async (quizId: string, asAdmin: boolean = false) => {
   const path = asAdmin
     ? `${QUIZZES_API}/${quizId}/admin`
     : `${QUIZZES_API}/${quizId}`;
-  const response = await axios.get(path);
+  const response = await axiosWithCredentials.get(path);
   return response.data;
 };
 
 export const createQuiz = async (quiz: any) => {
-  const response = await axios.post(QUIZZES_API, quiz);
+  const response = await axiosWithCredentials.post(QUIZZES_API, quiz);
   return response.data;
 };
 
 export const updateQuiz = async (quiz: any) => {
-  const response = await axios.put(`${QUIZZES_API}/${quiz._id}`, quiz);
+  const response = await axiosWithCredentials.put(
+    `${QUIZZES_API}/${quiz._id}`,
+    quiz
+  );
   return response.data;
 };
 
 export const deleteQuiz = async (quizId: string) => {
-  const response = await axios.delete(`${QUIZZES_API}/${quizId}`);
+  const response = await axiosWithCredentials.delete(
+    `${QUIZZES_API}/${quizId}`
+  );
   return response.data;
 };
 
 export const publishQuiz = async (quizId: string, published: boolean) => {
-  const response = await axios.put(`${QUIZZES_API}/${quizId}/publish`, {
-    published,
-  });
+  const response = await axiosWithCredentials.put(
+    `${QUIZZES_API}/${quizId}/publish`,
+    {
+      published,
+    }
+  );
   return response.data;
 };
 
 // --- QUESTION ENDPOINTS ---
 
 export const createQuestion = async (quizId: string, question: any) => {
-  const response = await axios.post(
+  const response = await axiosWithCredentials.post(
     `${QUIZZES_API}/${quizId}/questions`,
     question
   );
@@ -78,7 +86,7 @@ export const updateQuestion = async (
   questionId: string,
   question: any
 ) => {
-  const response = await axios.put(
+  const response = await axiosWithCredentials.put(
     `${QUIZZES_API}/${quizId}/questions/${questionId}`,
     question
   );
@@ -86,7 +94,7 @@ export const updateQuestion = async (
 };
 
 export const deleteQuestion = async (quizId: string, questionId: string) => {
-  const response = await axios.delete(
+  const response = await axiosWithCredentials.delete(
     `${QUIZZES_API}/${quizId}/questions/${questionId}`
   );
   return response.data;
