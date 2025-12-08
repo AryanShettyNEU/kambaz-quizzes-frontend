@@ -10,33 +10,33 @@ export default function QuizQuestion({
   isSubmitted,
   isCorrect,
 }: any) {
-  const questionBody = question.questionText || question.question || "";
+  const questionBody = question?.questionText || question?.question || "";
 
-  let optionsToDisplay = question.options
-    ? question.options.map((o: any) => o.text)
-    : question.choices || [];
+  let optionsToDisplay = question?.options
+    ? question?.options.map((o: any) => o.text)
+    : question?.choices || [];
 
   if (
-    (question.type as string).toUpperCase() === "TRUE_FALSE" &&
+    (question?.type as string)?.toUpperCase() === "TRUE_FALSE" &&
     optionsToDisplay.length === 0
   ) {
     optionsToDisplay = ["True", "False"];
   }
 
   const isOptionCorrect = (choiceText: string) => {
-    if (question.options) {
-      const match = question.options.find((o: any) => o.text === choiceText);
+    if (question?.options) {
+      const match = question?.options.find((o: any) => o.text === choiceText);
       return match ? match.isCorrect : false;
     }
-    return question.correctAnswers?.includes(choiceText);
+    return question?.correctAnswers?.includes(choiceText);
   };
 
   const getCorrectBlanks = () => {
-    if (question.options)
-      return question.options
+    if (question?.options)
+      return question?.options
         .filter((o: any) => o.isCorrect)
         .map((o: any) => o.text);
-    return question.correctAnswers || [];
+    return question?.correctAnswers || [];
   };
 
   const getOptionStyle = (choice: string) => {
@@ -89,15 +89,15 @@ export default function QuizQuestion({
     <Card className="mb-4 shadow-sm">
       <Card.Header className="d-flex justify-content-between align-items-center bg-light">
         <h5 className="m-0 fw-bold text-dark">Question {index + 1}</h5>
-        <span className="text-muted">{question.points} pts</span>
+        <span className="text-muted">{question?.points} pts</span>
       </Card.Header>
 
       <Card.Body>
         <div className="mb-4">{questionBody}</div>
 
-        {(question.type === "MULTIPLE_CHOICE" ||
-          question.type === "MCQ" ||
-          question.type === "TRUE_FALSE") && (
+        {(question?.type === "MULTIPLE_CHOICE" ||
+          question?.type === "MCQ" ||
+          question?.type === "TRUE_FALSE") && (
           <div className="d-flex flex-column gap-2">
             {optionsToDisplay.map((choice: string, idx: number) => {
               const isSelected = answer === choice;
@@ -120,8 +120,8 @@ export default function QuizQuestion({
                 >
                   <Form.Check
                     type="radio"
-                    name={question._id}
-                    id={`${question._id}-${idx}`}
+                    name={question?._id}
+                    id={`${question?._id}-${idx}`}
                     label={choice}
                     checked={answer === choice}
                     onChange={() => !isSubmitted && onChange(choice)}
@@ -137,7 +137,7 @@ export default function QuizQuestion({
           </div>
         )}
 
-        {question.type === "FILL_BLANKS" && (
+        {question?.type === "FILL_BLANKS" && (
           <div>
             <Form.Control
               value={answer || ""}

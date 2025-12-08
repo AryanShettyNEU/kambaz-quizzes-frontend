@@ -21,19 +21,22 @@ const page = () => {
 
   if (!attemptData) return <div>Loading...</div>;
   return (
-    <div>
+    <div className="w-100" style={{ maxWidth: "800px" }}>
       <div className="fw-bold fs-4 mb-4">Score: {attemptData.score}</div>
-      {attemptData.answers.map((userAnswer, idx) => (
-        <QuizQuestion
-          key={userAnswer._id}
-          question={userAnswer.question}
-          answer={userAnswer.answer}
-          index={idx}
-          isSubmitted={true}
-          onChange={() => {}}
-          isCorrect={userAnswer.isCorrect}
-        />
-      ))}
+      {attemptData.answers.map((userAnswer, idx) => {
+        if (!userAnswer.question) return;
+        return (
+          <QuizQuestion
+            key={userAnswer._id}
+            question={userAnswer.question}
+            answer={userAnswer.answer}
+            index={idx}
+            isSubmitted={true}
+            onChange={() => {}}
+            isCorrect={userAnswer.isCorrect}
+          />
+        );
+      })}
     </div>
   );
 };
