@@ -88,7 +88,7 @@ export default function QuizQuestion({
   return (
     <Card className="mb-4 shadow-sm">
       <Card.Header className="d-flex justify-content-between align-items-center bg-light">
-        <h5 className="m-0 fw-bold text-dark">Question {index + 1}</h5>
+        <h5 className="m-0 fw-bold text-dark">{question?.title}</h5>
         <span className="text-muted">{question?.points} pts</span>
       </Card.Header>
 
