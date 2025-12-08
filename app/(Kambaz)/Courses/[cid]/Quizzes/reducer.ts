@@ -71,7 +71,7 @@ export const deleteQuestion = createAsyncThunk(
 // --- SLICE ---
 
 const initialState = {
-  quizzes: [],
+  quizzes: [] as any[],
   questions: [],
   currentQuiz: null,
   loading: false,
