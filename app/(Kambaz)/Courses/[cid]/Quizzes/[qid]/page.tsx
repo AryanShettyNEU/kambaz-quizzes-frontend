@@ -8,6 +8,7 @@ import { fetchQuizDetails } from "./../reducer";
 import { fetchQuizzesForCourse, togglePublish } from "./../reducer";
 import * as client from "../client";
 import AttemptRow from "./AttemptRow";
+import { formatToReadable, getAvailabilityMsg } from "../utils";
 
 export default function QuizDetails() {
   const { cid, qid } = useParams();
@@ -65,8 +66,8 @@ export default function QuizDetails() {
   const getAvailability = () => {
     const now = new Date();
     const start = new Date(quiz.availableDate);
-    const end = new Date(quiz.untilDate);
-    return !(now > end || now < start)
+    const end = new Date(quiz.dueDate);
+    return !(now > end || now < start);
   };
 
   const isAvailable = getAvailability();
@@ -74,25 +75,32 @@ export default function QuizDetails() {
   const yn = (bool: boolean) => (bool ? "Yes" : "No");
 
   const quizSettings = [
-    { label: "Quiz Type", value: quiz.type || "Graded Quiz" },
+    {
+      label: "Quiz Type",
+      value: formatToReadable(quiz.quizType) || "Graded Quiz",
+    },
     { label: "Points", value: quiz.points || 0 },
     { label: "Assignment Group", value: quiz.assignmentGroup || "QUIZZES" },
     { label: "Shuffle Answers", value: yn(quiz.shuffleAnswers) },
     { label: "Time Limit", value: `${quiz.timeLimit || 20} Minutes` },
     { label: "Multiple Attempts", value: yn(quiz.multipleAttempts) },
-    { label: "View Responses", value: "Always" },
-    { label: "Show Correct Answers", value: yn(quiz.showCorrectAnswers) },
+    { label: "Show Correct Answers", value: quiz.showCorrectAnswers },
     { label: "One Question at a Time", value: yn(quiz.oneQuestionAtATime) },
-    { label: "Require Respondus LockDown Browser", value: "No" },
-    { label: "Required to View Quiz Results", value: "No" },
+    { label: "Can View Quiz Results", value: "No" },
     { label: "Webcam Required", value: yn(quiz.webcamRequired) },
-    { label: "Lock Questions After Answering", value: yn(quiz.lockQuestionsAfterAnswering) },
+    { label: "Access Code", value: quiz.accessCode },
+
+    {
+      label: "Lock Questions After Answering",
+      value: yn(quiz.lockQuestionsAfterAnswering),
+    },
     { label: "Maximum Number of Attempts", value: quiz.howManyAttempts },
   ];
 
   const handlePublishToggle = async () => {
-    
-    await dispatch(togglePublish({ quizId: qid as string, published: !quiz.published }));
+    await dispatch(
+      togglePublish({ quizId: qid as string, published: !quiz.published })
+    );
 
     dispatch(fetchQuizzesForCourse(cid as string));
   };
@@ -102,7 +110,6 @@ export default function QuizDetails() {
       <div className="d-flex justify-content-center gap-2 mb-4">
         {isFaculty && (
           <>
-
             <Button
               variant={quiz.published ? "danger" : "success"}
               onClick={handlePublishToggle}
@@ -130,19 +137,31 @@ export default function QuizDetails() {
         {!isFaculty && (
           <div className="text-center w-100">
             {remainingAttempts > 0 ? (
-              <Button
-                size="lg"
-                variant="danger"
-                onClick={() => router.push(`/Courses/${cid}/Quizzes/${qid}/TakeQuiz`)}
-                disabled={!isAvailable}
-              >
-                Start Quiz
-              </Button>
+              <>
+                <Button
+                  size="lg"
+                  variant="danger"
+                  onClick={() =>
+                    router.push(`/Courses/${cid}/Quizzes/${qid}/TakeQuiz`)
+                  }
+                  disabled={!isAvailable}
+                >
+                  Start Quiz
+                </Button>
+                {!isAvailable && (
+                  <div className="fw-bold mt-2">
+                    Quiz Status: {getAvailabilityMsg(quiz)}
+                  </div>
+                )}
+              </>
             ) : (
-              <Alert variant="secondary">You have used all your attempts.</Alert>
+              <Alert variant="secondary">
+                You have used all your attempts.
+              </Alert>
             )}
             <div className="text-muted mt-2 small">
-              Remaining Attempts: {remainingAttempts < 0 ? 0 : remainingAttempts}
+              Remaining Attempts:{" "}
+              {remainingAttempts < 0 ? 0 : remainingAttempts}
             </div>
           </div>
         )}
@@ -197,11 +216,17 @@ export default function QuizDetails() {
       <p className="fw-bold fs-4">Quiz Details:</p>
       <div className="mb-5">
         {quizSettings
-          .filter(setting => {
+          .filter((setting) => {
             if (isFaculty) {
               return true;
             } else {
-              return ["Quiz Type", "Points", "Time Limit", "Multiple Attempts", "Maximum Number of Attempts"].includes(setting.label);
+              return [
+                "Quiz Type",
+                "Points",
+                "Time Limit",
+                "Multiple Attempts",
+                "Maximum Number of Attempts",
+              ].includes(setting.label);
             }
           })
           .map((setting, index) => (
