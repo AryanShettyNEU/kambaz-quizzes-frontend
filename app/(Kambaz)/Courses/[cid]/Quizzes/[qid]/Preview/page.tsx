@@ -9,7 +9,7 @@ import QuizQuestion from "./QuizQuestion";
 export default function QuizPreview() {
   const { cid, qid } = useParams();
 
-  const { quizzes, questions, attempts } = useSelector(
+  const { quizzes, questions } = useSelector(
     (state: any) => state.quizzesReducer
   );
   const quiz = quizzes.find((q: any) => q._id === qid);
@@ -42,12 +42,7 @@ export default function QuizPreview() {
         const correctOptions = q.options
           ?.filter((opt: any) => opt.isCorrect)
           .map((o: any) => o.text);
-        if (
-          correctOptions?.some(
-            (ans: string) =>
-              ans.toLowerCase() === (studentAns || "").toLowerCase()
-          )
-        ) {
+        if (correctOptions?.some((ans: string) => ans === (studentAns || ""))) {
           earnedPoints += q.points;
         }
       }
